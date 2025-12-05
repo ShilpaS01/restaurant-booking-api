@@ -6,29 +6,20 @@ const cors = require('cors');
 
 const app = express();
 
-// Use Render's PORT if available, otherwise 54321 for local
+// Use Render's PORT or fallback for local
 const PORT = process.env.PORT || 54321;
 
-// ==========================================
-// Middleware
-// ==========================================
+// ======================= Middleware =======================
 
-// Allow requests from other origins (frontend)
 app.use(cors());
-
-// Body parser for POST requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve all frontend files (HTML, CSS, JS, images)
-app.use(express.static(path.join(__dirname, '../')));
-// assumes frontend files are in the parent folder of 'backend'
+// Serve all static files from current folder (HTML, CSS, JS)
+app.use(express.static(__dirname));
 
-// ==========================================
-// Sample data
-// ==========================================
+// ======================= Sample data =======================
 
-// Hotels data
 const hotels = [
   { name: "The Leela Palace Bengaluru", location: "Bengaluru" },
   { name: "ITC Gardenia", location: "Bengaluru" },
@@ -43,56 +34,44 @@ const hotels = [
   { name: "Samanvay Boutique Hotel", location: "Udupi" }
 ];
 
-// Booking data
 let bookings = [
   { name: "John Doe", hotel: "The Leela Palace Bengaluru", checkin: "2025-12-01", checkout: "2025-12-03", amount: "$500" },
   { name: "Jane Smith", hotel: "Radisson Blu Mysuru", checkin: "2025-11-28", checkout: "2025-11-30", amount: "$300" },
   { name: "Alice Johnson", hotel: "Taj Madikeri Resort", checkin: "2025-12-05", checkout: "2025-12-10", amount: "$800" }
 ];
 
-// Admin credentials
 const adminEmail = "shilpakodadur2004@gmail.com";
 const adminPassword = "Shilpa@123S";
 
-// ==========================================
-// Routes (pages)
-// ==========================================
+// ======================= Page routes =======================
 
 // Home page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Booking home page
 app.get('/bookinghome.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../bookinghome.html'));
+  res.sendFile(path.join(__dirname, 'bookinghome.html'));
 });
 
-// Booking page
 app.get('/booking.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../booking.html'));
+  res.sendFile(path.join(__dirname, 'booking.html'));
 });
 
-// Contact page
 app.get('/contact.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../contact.html'));
+  res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
-// Admin login page
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin.html'));
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// ==========================================
-// API endpoints
-// ==========================================
+// ======================= API routes =======================
 
-// Get hotels
 app.get('/api/hotels', (req, res) => {
   res.json(hotels);
 });
 
-// Admin login validation
 app.post('/api/admin/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -103,12 +82,10 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// Get all bookings (admin only)
 app.get('/api/bookings', (req, res) => {
   res.json(bookings);
 });
 
-// Add new booking
 app.post('/api/bookings', (req, res) => {
   const { name, hotel, checkin, checkout, amount } = req.body;
 
@@ -122,10 +99,8 @@ app.post('/api/bookings', (req, res) => {
   res.json({ success: true, message: "Booking added successfully", booking: newBooking });
 });
 
-// ==========================================
-// Start server
-// ==========================================
+// ======================= Start server =======================
+
 app.listen(PORT, () => {
   console.log(`Server running on PORT: ${PORT}`);
 });
-
